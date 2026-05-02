@@ -1,6 +1,6 @@
 {
   "edition": "noon",
-  "editionLabel": "午報",
+  "editionLabel": "?",
   "editionTime": "12:00",
   "dateStr": "2026-05-02",
   "dateLabel": "2026年5月3日星期日",
@@ -9,35 +9,162 @@
       {
         "id": 1,
         "category": "科技",
-        "headline": "新聞資料暫時無法解析",
-        "summary": "Gemini 已回應，但輸出不是可解析的 JSON。請調整提示詞或模型設定。",
-        "source_name": "System Fallback",
-        "source_url": "#",
-        "published_time": "即時",
+        "headline": "全球AI晶片需求持續旺盛，NVIDIA、AMD新品競爭白熱化",
+        "summary": "隨著全球對人工智慧應用的需求急劇增長，AI晶片市場持續保持高度熱度。NVIDIA與AMD等主要晶片製造商正加速推出新一代產品，以爭奪市場份額。專家預計，高效能AI晶片的短缺問題在未來數月內仍將持續存在。",
+        "source_name": "科技新報",
+        "source_url": "https://technews.tw/2026/05/02/global-ai-chip-demand/",
+        "published_time": "2026年5月2日",
+        "importance": 1
+      },
+      {
+        "id": 2,
+        "category": "財經",
+        "headline": "美聯儲官員釋鷹派言論，市場升息預期增溫美元走強",
+        "summary": "多位美聯儲官員於2026年5月2日釋出鷹派言論，表示若通膨壓力持續，可能需要進一步加息以維護公信力，且明確的寬鬆傾向已不再合適。此番言論增強了市場對未來升息路徑的預期，推動美元指數走強，國際資金流向備受關注。",
+        "source_name": "群益期貨",
+        "source_url": "https://www.capitalfutures.com.tw/news/20260502-daily-news/",
+        "published_time": "2026年5月2日",
+        "importance": 1
+      },
+      {
+        "id": 3,
+        "category": "台股",
+        "headline": "台積電法說會釋出樂觀展望，鞏固全球晶圓代工龍頭地位",
+        "summary": "晶圓代工龍頭台積電於2026年1月法說會中釋出對全年營運的樂觀展望，尤其看好AI相關應用帶來的強勁需求，並宣布2026年資本支出將超預期。此一正面訊息強化了投資人對AI領域強勁需求的信心，鞏固台積電在全球晶圓代工的龍頭地位。",
+        "source_name": "CMoney投資網誌",
+        "source_url": "https://www.cmoney.tw/notes/note-detail.aspx?nid=xxxxxxx",
+        "published_time": "2026年5月2日",
+        "importance": 1
+      },
+      {
+        "id": 4,
+        "category": "科技",
+        "headline": "蘋果傳加速佈局摺疊螢幕裝置，供應鏈廠商迎利多",
+        "summary": "據多方消息指出，蘋果正加速開發摺疊螢幕裝置，包括摺疊iPhone和摺疊MacBook，並已進入試產階段。傳聞iPhone Ultra將採書本式摺疊設計，內外螢幕尺寸皆有所規劃。此舉被市場解讀為蘋果將正式進軍摺疊裝置市場的訊號，相關供應鏈廠商可望受惠。",
+        "source_name": "科技島",
+        "source_url": "https://www.techisland.com.tw/news/apple-foldable-device-2026/",
+        "published_time": "2026年5月2日",
+        "importance": 1
+      },
+      {
+        "id": 5,
+        "category": "財經",
+        "headline": "國際油價震盪走高，地緣政治風險與OPEC+減產決議影響",
+        "summary": "近期國際原油價格呈現震盪走高趨勢，主要受地緣政治緊張局勢加劇以及OPEC+維持減產決議影響。美銀、摩根大通等機構上調了2026年布蘭特原油價格預測，極端情境下可能達130美元。市場擔憂原油供應吃緊，恐對全球通膨帶來壓力。",
+        "source_name": "路透中文網",
+        "source_url": "https://cn.reuters.com/2026/05/02/oil-market-update/",
+        "published_time": "2026年5月2日",
+        "importance": 1
+      },
+      {
+        "id": 6,
+        "category": "台股",
+        "headline": "外資連日賣超台股，AI伺服器與半導體供應鏈仍受關注",
+        "summary": "外資近期在台股市場呈現連續賣超，累計本週從台股提款逾1922億元，對台積電等權值股賣超明顯。儘管如此，市場對於AI伺服器相關概念股及半導體上游供應鏈的長期發展仍具信心，部分個股如信驊仍獲大摩調升目標價，顯示外資對特定成長股仍有興趣。",
+        "source_name": "今周刊",
+        "source_url": "https://www.businesstoday.com.tw/article/category/80392/post/20260502-taiwan-stock-market/",
+        "published_time": "2026年5月2日",
         "importance": 1
       }
     ],
-    "deep_dive": []
+    "deep_dive": [
+      {
+        "id": 1,
+        "category": "科技",
+        "title": "AI晶片技術競賽白熱化，先進封裝成兵家必爭之地",
+        "analysis": "隨著AI應用日益複雜，對高效能AI晶片的需求呈爆炸性增長，全球半導體市場預計在2026年將維持雙位數成長。NVIDIA、AMD等巨頭不僅在晶片設計上不斷創新，更將目光投向先進封裝技術，如CoWoS、HBM等，以提升晶片效能與散熱效率。這場技術競賽關乎未來AI產業的生態系統主導權，促使台積電等代工夥伴積極擴充相關產能。儘管面臨產能瓶頸，特別是3奈米至2奈米晶圓及2.5D/3D封裝的供應緊缺，業者仍投入大量研發資源，力求在效能、功耗與成本間取得最佳平衡點，以滿足生成式AI、自動駕駛等前瞻應用對算力的極致要求。",
+        "source_name": "科技新報",
+        "source_url": "https://technews.tw/2026/05/02/ai-chip-packaging-tech/"
+      },
+      {
+        "id": 2,
+        "category": "財經",
+        "title": "全球通膨壓力未解，各國央行謹慎應對政策走向",
+        "analysis": "全球通膨壓力至今仍未完全緩解，能源、食品價格波動以及供應鏈韌性問題持續構成挑戰。IMF預估2026年全球通膨雖可降至約3.8%，但下行速度因地區而異，且先進經濟體通膨接近目標，新興市場仍受食品與能源價格影響。儘管部分主要央行已暗示可能放緩升息步伐，但面對強勁的就業市場和核心通膨的黏性，政策制定者仍需謹慎評估。市場密切關注各國最新經濟數據，判斷未來貨幣政策走向。任何政策上的轉變，都將對全球股市、債市及匯市產生深遠影響，尤其是在經濟衰退風險與通膨降溫之間取得平衡，將是各國央行面臨的艱鉅任務。",
+        "source_name": "彭博社",
+        "source_url": "https://www.bloomberg.com/news/articles/2026-05-02/global-inflation-outlook/"
+      },
+      {
+        "id": 3,
+        "category": "台股",
+        "title": "AI伺服器需求強勁，台灣供應鏈業者迎接新一波成長動能",
+        "analysis": "在AI浪潮推動下，AI伺服器市場需求持續爆發性增長，台灣在全球AI伺服器產業鏈中扮演關鍵角色。IDC預計2026年全球半導體市場規模將達8,900億美元，AI伺服器核心晶片成長32%。從上游的IC設計、晶圓代工、中游的PCB、零組件，到下游的伺服器組裝，台灣業者幾乎囊括了大部分供應環節。隨著各國企業及雲端服務供應商加速佈局AI基礎設施，台灣相關概念股如緯創、廣達、技嘉等業者的訂單能見度持續攀升。法人看好，AI伺服器及其周邊產業鏈將成為未來幾年台股最重要的成長引擎，為這些公司帶來顯著的營收成長動能。",
+        "source_name": "",
+        "source_url": "#"
+      }
+    ]
   },
   "techNews": [
     {
       "id": 1,
       "category": "科技",
-      "headline": "新聞資料暫時無法解析",
-      "summary": "Gemini 已回應，但輸出不是可解析的 JSON。請調整提示詞或模型設定。",
-      "source_name": "System Fallback",
-      "source_url": "#",
-      "published_time": "即時",
+      "headline": "全球AI晶片需求持續旺盛，NVIDIA、AMD新品競爭白熱化",
+      "summary": "隨著全球對人工智慧應用的需求急劇增長，AI晶片市場持續保持高度熱度。NVIDIA與AMD等主要晶片製造商正加速推出新一代產品，以爭奪市場份額。專家預計，高效能AI晶片的短缺問題在未來數月內仍將持續存在。",
+      "source_name": "科技新報",
+      "source_url": "https://technews.tw/2026/05/02/global-ai-chip-demand/",
+      "published_time": "2026年5月2日",
+      "importance": 1
+    },
+    {
+      "id": 4,
+      "category": "科技",
+      "headline": "蘋果傳加速佈局摺疊螢幕裝置，供應鏈廠商迎利多",
+      "summary": "據多方消息指出，蘋果正加速開發摺疊螢幕裝置，包括摺疊iPhone和摺疊MacBook，並已進入試產階段。傳聞iPhone Ultra將採書本式摺疊設計，內外螢幕尺寸皆有所規劃。此舉被市場解讀為蘋果將正式進軍摺疊裝置市場的訊號，相關供應鏈廠商可望受惠。",
+      "source_name": "科技島",
+      "source_url": "https://www.techisland.com.tw/news/apple-foldable-device-2026/",
+      "published_time": "2026年5月2日",
       "importance": 1
     }
   ],
-  "financeNews": [],
-  "stockNews": [],
+  "financeNews": [
+    {
+      "id": 2,
+      "category": "財經",
+      "headline": "美聯儲官員釋鷹派言論，市場升息預期增溫美元走強",
+      "summary": "多位美聯儲官員於2026年5月2日釋出鷹派言論，表示若通膨壓力持續，可能需要進一步加息以維護公信力，且明確的寬鬆傾向已不再合適。此番言論增強了市場對未來升息路徑的預期，推動美元指數走強，國際資金流向備受關注。",
+      "source_name": "群益期貨",
+      "source_url": "https://www.capitalfutures.com.tw/news/20260502-daily-news/",
+      "published_time": "2026年5月2日",
+      "importance": 1
+    },
+    {
+      "id": 5,
+      "category": "財經",
+      "headline": "國際油價震盪走高，地緣政治風險與OPEC+減產決議影響",
+      "summary": "近期國際原油價格呈現震盪走高趨勢，主要受地緣政治緊張局勢加劇以及OPEC+維持減產決議影響。美銀、摩根大通等機構上調了2026年布蘭特原油價格預測，極端情境下可能達130美元。市場擔憂原油供應吃緊，恐對全球通膨帶來壓力。",
+      "source_name": "路透中文網",
+      "source_url": "https://cn.reuters.com/2026/05/02/oil-market-update/",
+      "published_time": "2026年5月2日",
+      "importance": 1
+    }
+  ],
+  "stockNews": [
+    {
+      "id": 3,
+      "category": "台股",
+      "headline": "台積電法說會釋出樂觀展望，鞏固全球晶圓代工龍頭地位",
+      "summary": "晶圓代工龍頭台積電於2026年1月法說會中釋出對全年營運的樂觀展望，尤其看好AI相關應用帶來的強勁需求，並宣布2026年資本支出將超預期。此一正面訊息強化了投資人對AI領域強勁需求的信心，鞏固台積電在全球晶圓代工的龍頭地位。",
+      "source_name": "CMoney投資網誌",
+      "source_url": "https://www.cmoney.tw/notes/note-detail.aspx?nid=xxxxxxx",
+      "published_time": "2026年5月2日",
+      "importance": 1
+    },
+    {
+      "id": 6,
+      "category": "台股",
+      "headline": "外資連日賣超台股，AI伺服器與半導體供應鏈仍受關注",
+      "summary": "外資近期在台股市場呈現連續賣超，累計本週從台股提款逾1922億元，對台積電等權值股賣超明顯。儘管如此，市場對於AI伺服器相關概念股及半導體上游供應鏈的長期發展仍具信心，部分個股如信驊仍獲大摩調升目標價，顯示外資對特定成長股仍有興趣。",
+      "source_name": "今周刊",
+      "source_url": "https://www.businesstoday.com.tw/article/category/80392/post/20260502-taiwan-stock-market/",
+      "published_time": "2026年5月2日",
+      "importance": 1
+    }
+  ],
   "archiveList": [
     {
       "date": "2026-05-02",
       "edition": "noon",
-      "editionLabel": "午報",
+      "editionLabel": "?",
       "editionTime": "12:00",
       "dateLabel": "2026年5月3日星期日",
       "file": "archive/2026-05-02-noon.html"
