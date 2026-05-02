@@ -1,0 +1,17 @@
+{
+  "edition": "morning",
+  "editionLabel": "早報",
+  "editionTime": "07:00",
+  "dateStr": "2026-05-02",
+  "dateLabel": "2026年5月2日 星期六",
+  "newsData": {
+    "headlines": [],
+    "deep_dive": []
+  },
+  "headlineCards": "",
+  "deepCards": "",
+  "techNews": [],
+  "financeNews": [],
+  "stockNews": [],
+  "archiveList": []
+}

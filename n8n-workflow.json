@@ -1,0 +1,279 @@
+{
+  "name": "?????? - AI???????皝?",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "cronExpression", "expression": "0 23 * * *" },
+            { "field": "cronExpression", "expression": "0 4 * * *" },
+            { "field": "cronExpression", "expression": "0 10 * * *" }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "????怨?謒??(UTC)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "notes": "??遜?蹇? 07:00=UTC 23:00???, 12:00=UTC 04:00, 18:00=UTC 10:00"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ????獢???秋?????nconst now = new Date();\nconst twOffset = 8 * 60;\nconst utcMin = now.getUTCHours() * 60 + now.getUTCMinutes();\nconst twMin = (utcMin + twOffset) % (24 * 60);\nconst twHour = Math.floor(twMin / 60);\n\nlet edition = 'morning';\nlet editionLabel = '??鼓';\nlet editionTime = '07:00';\nif (twHour >= 18) { edition = 'evening'; editionLabel = '?謍堊鼓'; editionTime = '18:00'; }\nelse if (twHour >= 12) { edition = 'noon'; editionLabel = '??鼓'; editionTime = '12:00'; }\n\n// ??鈭?鈭???????\nconst twDate = new Date(now.getTime() + twOffset * 60 * 1000);\nconst dateStr = twDate.toISOString().slice(0, 10);\nconst dateLabel = twDate.toLocaleDateString('zh-TW', { year:'numeric', month:'long', day:'numeric', weekday:'long' });\n\nreturn [{ json: { edition, editionLabel, editionTime, dateStr, dateLabel, twHour } }];"
+      },
+      "id": "set-edition",
+      "name": "Set Edition",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"tools\":[{\"google_search\":{}}],\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"??? Google Search ?? {{ $json.dateLabel }} ?????????????????? JSON???? {\\\"headlines\\\":[...],\\\"deep_dive\\\":[...]}?headlines ?? 5 ?????? id?category?headline?summary?source_name?source_url?published_time?importance?deep_dive ?? 2 ?????? id?category?title?analysis?source_name?source_url?summary ? analysis ??????????????????????\"}]}]}",
+        "options": {}
+      },
+      "id": "gemini-search",
+      "name": "Gemini Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
+      "credentials": {
+        "httpQueryAuth": {
+          "name": "Gemini API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Gemini response into site data\\nconst response = $input.first().json;\\nlet newsData = { headlines: [], deep_dive: [] };\\n\\ntry {\\n  const candidates = response.candidates || [];\\n  if (candidates.length === 0) throw new Error('No candidates');\\n  const parts = candidates[0].content?.parts || [];\\n  let text = parts.map((p) => p.text || '').join('');\\n  text = text.replace(/```json\\\\n?/g, '').replace(/```\\\\n?/g, '').trim();\\n  newsData = JSON.parse(text);\\n} catch (e) {\\n  newsData = {\\n    headlines: [{\\n      id: 1,\\n      category: '??',\\n      headline: 'AI ??????????',\\n      summary: 'Gemini ?????????? JSON???? API ?????????',\\n      source_name: 'System Fallback',\\n      source_url: '#',\\n      published_time: '??',\\n      importance: 1\\n    }],\\n    deep_dive: []\\n  };\\n}\\n\\nconst edition = $('Set Edition').first().json;\\nreturn [{ json: { ...edition, newsData } }];"
+      },
+      "id": "parse-news",
+      "name": "Parse News Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst { newsData, edition, editionLabel, editionTime, dateStr, dateLabel } = data;\n\n// ????湛???\nconst tagClass = { '??': 'tag-tech', '???': 'tag-finance', '???': 'tag-stock' };\nconst tagColor = { '??': '#1a3a6b', '???': '#1a5c2a', '???': '#7a1a0a' };\n\n// ?賹??????? HTML\nfunction newsCard(item, index) {\n  const tag = item.category || '??';\n  const cls = tagClass[tag] || 'tag-tech';\n  return `\n  <div class=\"card\">\n    <div class=\"card-number\">${String(index+1).padStart(2,'0')}</div>\n    <span class=\"card-tag ${cls}\">${tag}</span>\n    <div class=\"card-headline\">${item.headline}</div>\n    <div class=\"card-summary\">${item.summary}</div>\n    <div class=\"card-meta\">\n      <span class=\"card-source\">\n        <a href=\"${item.source_url}\" target=\"_blank\" rel=\"noopener\" style=\"color:inherit;text-decoration:none\">${item.source_name}</a>\n      </span>\n      <span>${item.published_time || ''}</span>\n    </div>\n  </div>`;\n}\n\n// ?賹???瞍??????\nfunction deepCard(item, index) {\n  return `\n  <div class=\"deep-card\">\n    <div class=\"deep-number\">${String(index+1).padStart(2,'0')}</div>\n    <div class=\"deep-label\">${item.category || 'ANALYSIS'}</div>\n    <div class=\"deep-title\">${item.title}</div>\n    <div class=\"deep-body\">${item.analysis}</div>\n    <div class=\"deep-source\">???????a href=\"${item.source_url}\" target=\"_blank\" rel=\"noopener\" style=\"color:inherit\">${item.source_name}</a></div>\n  </div>`;\n}\n\nconst headlineCards = (newsData.headlines || []).map((h,i) => newsCard(h,i)).join('');\nconst deepCards = (newsData.deep_dive || []).map((d,i) => deepCard(d,i)).join('');\n\n// ?????\nconst techNews = (newsData.headlines || []).filter(h => h.category === '??');\nconst financeNews = (newsData.headlines || []).filter(h => h.category === '???');\nconst stockNews = (newsData.headlines || []).filter(h => h.category === '???');\n\nreturn [{ json: { ...data, headlineCards, deepCards, techNews, financeNews, stockNews } }];"
+      },
+      "id": "generate-html-parts",
+      "name": "Generate HTML Parts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst { edition, editionLabel, editionTime, dateStr, dateLabel, headlineCards, deepCards } = data;\n\n// ??謘?????殉朱??萄???謕???賡???澗???????? GitHub ??謖?\nconst archiveItem = `\n  <a class=\"archive-item\" href=\"archive/${dateStr}-${edition}.html\">\n    <div class=\"archive-date\">${dateStr} ${editionTime}</div>\n    <div class=\"archive-edition\">${dateLabel.slice(0,10)} ${editionLabel}</div>\n  </a>`;\n\n// ?堆??index.html\nconst indexHtml = `<!DOCTYPE html>\n<html lang=\"zh-TW\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>?????? ?????擗?秋?????鈭鼓</title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link href=\"https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap\" rel=\"stylesheet\">\n<style>\n:root{--ink:#0f0f0f;--paper:#f5f0e8;--paper2:#ede8dc;--accent:#c8102e;--accent2:#1a3a6b;--gold:#b8972a;--muted:#6b6560;--border:#c8c0b0;--tag-tech:#1a3a6b;--tag-finance:#1a5c2a;--tag-stock:#7a1a0a;}\n*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}\nbody{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden}\n.masthead{background:var(--ink);color:var(--paper);position:relative;overflow:hidden}\n.masthead::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,0.03) 59px,rgba(255,255,255,0.03) 60px)}\n.masthead-inner{position:relative;max-width:1200px;margin:0 auto;padding:16px 32px 0}\n.masthead-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:12px;margin-bottom:12px;font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.08em}\n.masthead-date-badge{background:var(--accent);color:white;padding:2px 10px;font-size:10px;letter-spacing:0.1em}\n.logo-block{text-align:center;padding:12px 0 20px}\n.logo-en{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.3em;color:var(--gold);margin-bottom:4px}\n.logo-zh{font-family:'DM Serif Display','Noto Serif TC',serif;font-size:clamp(42px,7vw,80px);font-weight:900;color:white;line-height:1}\n.logo-zh span{color:var(--accent)}\n.logo-tagline{font-family:'Noto Serif TC',serif;font-size:13px;color:rgba(255,255,255,0.4);letter-spacing:0.4em;margin-top:8px}\n.nav-bar{display:flex;justify-content:center;border-top:1px solid rgba(255,255,255,0.1);margin-top:4px}\n.nav-bar a{color:rgba(255,255,255,0.7);text-decoration:none;font-family:'Noto Serif TC',serif;font-size:13px;padding:10px 24px;letter-spacing:0.1em;transition:all 0.2s;border-right:1px solid rgba(255,255,255,0.1)}\n.nav-bar a:first-child{border-left:1px solid rgba(255,255,255,0.1)}\n.nav-bar a:hover{background:rgba(255,255,255,0.07);color:white}\n.nav-bar a.active{color:var(--gold)}\n.edition-ribbon{background:var(--accent);color:white;text-align:center;padding:8px 32px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em}\n.site-wrapper{max-width:1200px;margin:0 auto;padding:0 32px 80px}\n.section-header{display:flex;align-items:center;gap:16px;padding:28px 0 16px;border-bottom:3px solid var(--ink);margin-bottom:28px}\n.section-header h2{font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;letter-spacing:0.05em}\n.section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;color:var(--muted)}\n.section-line{flex:1;height:1px;background:var(--border)}\n.edition-tabs{display:flex;gap:4px;margin:32px 0 24px;border-bottom:2px solid var(--border)}\n.edition-tab{padding:10px 20px;font-family:'Noto Serif TC',serif;font-size:13px;cursor:pointer;border:2px solid transparent;border-bottom:none;margin-bottom:-2px;background:none;color:var(--muted);letter-spacing:0.05em;transition:all 0.15s}\n.edition-tab.active{background:var(--paper);border-color:var(--border);border-bottom-color:var(--paper);color:var(--ink);font-weight:600}\n.news-edition{display:none}\n.news-edition.active{display:block}\n.news-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2px}\n.news-grid .card:first-child{grid-column:1/3}\n.card{background:var(--paper);padding:24px;position:relative;transition:background 0.15s}\n.card:hover{background:#efe9dc}\n.card-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;padding:3px 8px;color:white;margin-bottom:12px;text-transform:uppercase}\n.tag-tech{background:var(--tag-tech)}.tag-finance{background:var(--tag-finance)}.tag-stock{background:var(--tag-stock)}\n.card-headline{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;line-height:1.45;margin-bottom:10px}\n.card:first-child .card-headline{font-size:26px}\n.card-summary{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:14px}\n.card-meta{display:flex;align-items:center;justify-content:space-between;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px}\n.card-source::before{content:'??;font-size:7px;color:var(--gold);margin-right:6px}\n.card-number{font-size:28px;font-family:'DM Serif Display',serif;color:var(--border);position:absolute;top:16px;right:20px;line-height:1}\n.deep-dive-section{margin-top:40px}\n.deep-dive-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}\n.deep-card{background:var(--paper);padding:28px;position:relative}\n.deep-card:hover{background:#efe9dc}\n.deep-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.25em;color:var(--accent);text-transform:uppercase;margin-bottom:10px}\n.deep-number{font-family:'DM Serif Display',serif;font-size:52px;color:rgba(0,0,0,0.06);position:absolute;top:12px;right:20px;line-height:1}\n.deep-title{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;margin-bottom:10px;line-height:1.5}\n.deep-body{font-size:13px;color:var(--muted);line-height:1.9}\n.deep-source{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);margin-top:12px}\n.archive-section{margin-top:48px}\n.archive-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:16px}\n.archive-item{background:var(--paper2);border:1px solid var(--border);padding:14px 16px;text-decoration:none;color:var(--ink);transition:all 0.15s;display:block}\n.archive-item:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}\n.archive-date{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);margin-bottom:4px}\n.archive-item:hover .archive-date{color:rgba(255,255,255,0.5)}\n.archive-edition{font-family:'Noto Serif TC',serif;font-size:13px;font-weight:600}\nfooter{background:var(--ink);color:rgba(255,255,255,0.5);text-align:center;padding:32px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.1em;margin-top:60px}\nfooter strong{color:var(--gold)}\n@media(max-width:768px){.site-wrapper{padding:0 16px 60px}.news-grid{grid-template-columns:1fr}.news-grid .card:first-child{grid-column:1}.deep-dive-grid{grid-template-columns:1fr}.masthead-inner{padding:12px 16px 0}.logo-zh{font-size:36px}}\n</style>\n</head>\n<body>\n<header class=\"masthead\">\n<div class=\"masthead-inner\">\n<div class=\"masthead-top\">\n<span>${dateLabel}</span>\n<span class=\"masthead-date-badge\">AI ?踝????</span>\n<span>???????鈭鼓</span>\n</div>\n<div class=\"logo-block\">\n<div class=\"logo-en\">Lighthouse Financial Daily</div>\n<div class=\"logo-zh\">??span>??/span>???</div>\n<div class=\"logo-tagline\">???? 蝜?????蝜?????/div>\n</div>\n<nav class=\"nav-bar\">\n<a href=\"index.html\" class=\"active\">?????</a>\n<a href=\"categories/tech.html\">??</a>\n<a href=\"categories/finance.html\">???</a>\n<a href=\"categories/stock.html\">???</a>\n<a href=\"archive/index.html\">?撒?</a>\n</nav>\n</div>\n</header>\n<div class=\"edition-ribbon\">${editionLabel}??${editionTime} &nbsp;蝜?nbsp; ??AI ????賹????????&nbsp;蝜?nbsp; ?伍謑?07:00 / 12:00 / 18:00 ?皝?</div>\n<main class=\"site-wrapper\">\n<div class=\"edition-tabs\">\n<button class=\"edition-tab ${edition==='morning'?'active':''}\" onclick=\"switchEdition('morning',this)\">??????鼓 07:00</button>\n<button class=\"edition-tab ${edition==='noon'?'active':''}\" onclick=\"switchEdition('noon',this)\">?????鼓 12:00</button>\n<button class=\"edition-tab ${edition==='evening'?'active':''}\" onclick=\"switchEdition('evening',this)\">?? ?謍堊鼓 18:00</button>\n</div>\n<div id=\"edition-${edition}\" class=\"news-edition active\">\n<div class=\"section-header\"><div class=\"section-label\">TODAY'S HEADLINES</div><div class=\"section-line\"></div><h2>??謑??????</h2></div>\n<div class=\"news-grid\">${headlineCards}</div>\n<div class=\"deep-dive-section\">\n<div class=\"section-header\"><div class=\"section-label\">DEEP DIVE</div><div class=\"section-line\"></div><h2>??謑??撞???</h2></div>\n<div class=\"deep-dive-grid\">${deepCards}</div>\n</div>\n</div>\n<div id=\"edition-morning\" class=\"news-edition ${edition==='morning'?'':''}\" style=\"${edition!=='morning'?'':'display:none'}\">\n<div style=\"text-align:center;padding:60px 0;color:var(--muted);font-family:'Noto Serif TC',serif;\">??鼓??秧?ｇ???謜??鼓</div>\n</div>\n<div class=\"archive-section\">\n<div class=\"section-header\"><div class=\"section-label\">ARCHIVE</div><div class=\"section-line\"></div><h2>???暹?蹓?</h2></div>\n<div class=\"archive-list\" id=\"archive-list\">ARCHIVE_PLACEHOLDER</div>\n</div>\n</main>\n<footer>\n<div>?蟡??????<strong>AI ???????????/strong>?????鼓???????賹??????/div>\n<div style=\"margin-top:8px\">??寞??????蜃?????????????蹇????瑁?&copy; ${new Date().getFullYear()}</div>\n</footer>\n<script>\nfunction switchEdition(name,btn){document.querySelectorAll('.news-edition').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.edition-tab').forEach(el=>el.classList.remove('active'));document.getElementById('edition-'+name).classList.add('active');btn.classList.add('active');}\n<\\/script>\n</body>\n</html>`;\n\nreturn [{ json: { ...data, indexHtml, newArchiveItem: archiveItem } }];"
+      },
+      "id": "build-index-html",
+      "name": "Build Index HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst { newsData, edition, editionLabel, editionTime, dateStr, dateLabel, headlineCards, deepCards } = data;\n\n// ?撒??蹓遴? HTML\nconst archiveHtml = `<!DOCTYPE html>\n<html lang=\"zh-TW\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>${dateStr} ${editionLabel} ?????????撒?</title>\n<link href=\"https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap\" rel=\"stylesheet\">\n<style>\n:root{--ink:#0f0f0f;--paper:#f5f0e8;--paper2:#ede8dc;--accent:#c8102e;--gold:#b8972a;--muted:#6b6560;--border:#c8c0b0;--tag-tech:#1a3a6b;--tag-finance:#1a5c2a;--tag-stock:#7a1a0a;}\n*{box-sizing:border-box;margin:0;padding:0}\nbody{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;font-weight:300;line-height:1.7}\n.masthead{background:var(--ink);color:var(--paper);padding:20px 32px}\n.masthead-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}\n.logo{font-family:'DM Serif Display',serif;font-size:24px;color:white;text-decoration:none}\n.logo span{color:var(--accent)}\n.back-link{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);text-decoration:none}\n.arc-hero{background:var(--ink);color:rgba(255,255,255,0.7);padding:32px 32px 28px;border-top:1px solid rgba(255,255,255,0.1)}\n.arc-hero-inner{max-width:1100px;margin:0 auto}\n.arc-meta{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--gold);margin-bottom:8px}\n.arc-title{font-family:'DM Serif Display',serif;font-size:36px;color:white}\n.content{max-width:1100px;margin:0 auto;padding:36px 32px 80px}\n.section-header{display:flex;align-items:center;gap:16px;padding:20px 0 14px;border-bottom:3px solid var(--ink);margin-bottom:24px}\n.section-header h2{font-family:'Noto Serif TC',serif;font-size:20px;font-weight:700}\n.section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;color:var(--muted)}\n.section-line{flex:1;height:1px;background:var(--border)}\n.news-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2px}\n.news-grid .card:first-child{grid-column:1/3}\n.card{background:var(--paper);padding:22px;position:relative;transition:background 0.15s}\n.card:hover{background:#efe9dc}\n.card-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;padding:3px 8px;color:white;margin-bottom:10px}\n.tag-tech{background:var(--tag-tech)}.tag-finance{background:var(--tag-finance)}.tag-stock{background:var(--tag-stock)}\n.card-headline{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;line-height:1.5;margin-bottom:8px}\n.card:first-child .card-headline{font-size:22px}\n.card-summary{font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:12px}\n.card-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px}\n.card-source::before{content:'??;font-size:7px;color:var(--gold);margin-right:6px}\n.card-number{font-size:24px;font-family:'DM Serif Display',serif;color:var(--border);position:absolute;top:12px;right:16px}\n.deep-dive-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}\n.deep-card{background:var(--paper);padding:24px;position:relative}\n.deep-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.25em;color:var(--accent);margin-bottom:8px}\n.deep-number{font-family:'DM Serif Display',serif;font-size:48px;color:rgba(0,0,0,0.05);position:absolute;top:10px;right:16px}\n.deep-title{font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.5}\n.deep-body{font-size:13px;color:var(--muted);line-height:1.9}\n.deep-source{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);margin-top:10px}\nfooter{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:24px;font-family:'Space Mono',monospace;font-size:11px;margin-top:40px}\n</style>\n</head>\n<body>\n<header class=\"masthead\">\n<div class=\"masthead-inner\">\n<a href=\"../index.html\" class=\"logo\">??span>??/span>???</a>\n<a href=\"../index.html\" class=\"back-link\">??擗???????</a>\n</div>\n</header>\n<div class=\"arc-hero\">\n<div class=\"arc-hero-inner\">\n<div class=\"arc-meta\">${dateStr} 蝜?${editionLabel} 蝜?${editionTime}</div>\n<div class=\"arc-title\">${dateLabel} ${editionLabel}</div>\n</div>\n</div>\n<div class=\"content\">\n<div class=\"section-header\"><div class=\"section-label\">HEADLINES</div><div class=\"section-line\"></div><h2>??????</h2></div>\n<div class=\"news-grid\">${headlineCards}</div>\n<div style=\"margin-top:36px\">\n<div class=\"section-header\"><div class=\"section-label\">DEEP DIVE</div><div class=\"section-line\"></div><h2>??瞍???</h2></div>\n<div class=\"deep-dive-grid\">${deepCards}</div>\n</div>\n</div>\n<footer>???????撒?????${dateStr} ${editionLabel}</footer>\n</body>\n</html>`;\n\nreturn [{ json: { ...data, archiveHtml, archiveFilename: `archive/${dateStr}-${edition}.html` } }];"
+      },
+      "id": "build-archive-html",
+      "name": "Build Archive HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 480]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/archive-list.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/vnd.github.v3+json" },
+            { "name": "User-Agent", "value": "n8n-news-bot" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "get-archive-list",
+      "name": "Get Archive List",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const archiveResponse = $input.first().json;\nconst prevData = $('Build Index HTML').first().json;\n\nlet archiveList = [];\nlet archiveFileSha = null;\n\ntry {\n  if (archiveResponse.content) {\n    const decoded = Buffer.from(archiveResponse.content, 'base64').toString('utf-8');\n    archiveList = JSON.parse(decoded);\n    archiveFileSha = archiveResponse.sha;\n  }\n} catch(e) { archiveList = []; }\n\n// ????謕暑????殉?nconst newEntry = {\n  date: prevData.dateStr,\n  edition: prevData.edition,\n  editionLabel: prevData.editionLabel,\n  editionTime: prevData.editionTime,\n  dateLabel: prevData.dateLabel,\n  file: `archive/${prevData.dateStr}-${prevData.edition}.html`\n};\n\n// ?頦????\narchiveList = archiveList.filter(a => !(a.date === newEntry.date && a.edition === newEntry.edition));\narchiveList.unshift(newEntry);\n// ????謕?擗?90 ?nif (archiveList.length > 90) archiveList = archiveList.slice(0, 90);\n\n// ?賹??撒??謅?HTML??蝑?index.html ???\nconst archiveHtmlList = archiveList.slice(0, 30).map(a =>\n  `<a class=\"archive-item\" href=\"${a.file}\"><div class=\"archive-date\">${a.date} ${a.editionTime}</div><div class=\"archive-edition\">${a.dateLabel ? a.dateLabel.slice(0,10) : a.date} ${a.editionLabel}</div></a>`\n).join('');\n\n// ??ARCHIVE_PLACEHOLDER ?頦???幡const finalIndexHtml = prevData.indexHtml.replace('ARCHIVE_PLACEHOLDER', archiveHtmlList || '<div style=\"color:var(--muted)\">?垓??蹓?</div>');\n\nreturn [{ json: { ...prevData, archiveList, archiveFileSha, finalIndexHtml } }];"
+      },
+      "id": "update-archive-list",
+      "name": "Update Archive List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/index.html",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/vnd.github.v3+json" },
+            { "name": "User-Agent", "value": "n8n-news-bot" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "get-index-sha",
+      "name": "Get Index SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2000, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/news-data.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/vnd.github.v3+json" },
+            { "name": "User-Agent", "value": "n8n-news-bot" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "get-news-data-sha",
+      "name": "Get News Data SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2220, 480],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const shaResponse = $input.first().json;\nconst data = $('?皝??撒??謅?).first().json;\nconst archiveData = $('Build Archive HTML').first().json;\nconst newsDataResponse = $('Get News Data SHA').first().json;\n\nconst indexSha = shaResponse.sha || null;\nconst newsSha = newsDataResponse.sha || null;\n\n// Base64 encode\nfunction toBase64(str) {\n  return Buffer.from(str, 'utf-8').toString('base64');\n}\n\nconst files = [\n  {\n    path: 'index.html',\n    content: toBase64(data.finalIndexHtml),\n    sha: indexSha,\n    message: `[${data.editionLabel}] ${data.dateStr} ${data.editionTime} ????皝?`\n  },\n  {\n    path: archiveData.archiveFilename,\n    content: toBase64(archiveData.archiveHtml),\n    sha: null,\n    message: `?撒? ${data.dateStr} ${data.editionLabel}`\n  },\n  {\n    path: 'news-data.json',\n    content: toBase64(JSON.stringify({\n      edition: data.edition,\n      editionLabel: data.editionLabel,\n      editionTime: data.editionTime,\n      dateStr: data.dateStr,\n      dateLabel: data.dateLabel,\n      newsData: data.newsData,\n      headlineCards: data.headlineCards,\n      deepCards: data.deepCards,\n      techNews: data.techNews,\n      financeNews: data.financeNews,\n      stockNews: data.stockNews,\n      archiveList: data.archiveList\n    }, null, 2)),\n    sha: newsSha,\n    message: `?皝?????? ${data.dateStr} ${data.editionLabel}`\n  },\n  {\n    path: 'archive-list.json',\n    content: toBase64(JSON.stringify(data.archiveList, null, 2)),\n    sha: data.archiveFileSha,\n    message: `?皝??撒??謅?${data.dateStr}`\n  }\n];\n\nreturn files.map(f => ({ json: { ...data, ...f } }));"
+      },
+      "id": "prepare-github-files",
+      "name": "Prepare GitHub Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2220, 300]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/{{ $json.path }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/vnd.github.v3+json" },
+            { "name": "User-Agent", "value": "n8n-news-bot" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.message }}\",\n  \"content\": \"{{ $json.content }}\"\n  {{ $json.sha ? ', \"sha\": \"' + $json.sha + '\"' : '' }}\n}",
+        "options": {}
+      },
+      "id": "push-to-github",
+      "name": "Push To GitHub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2440, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_NOTIFICATION_EMAIL@example.com",
+        "subject": "=??????{{ $('Set Edition').first().json.editionLabel }} {{ $('Set Edition').first().json.dateStr }}",
+        "emailType": "html",
+        "message": "=<div style=\"font-family:Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#f5f0e8\">\\n<div style=\"background:#0f0f0f;color:#fff;padding:24px 32px;text-align:center\">\\n  <div style=\"font-size:11px;letter-spacing:.3em;color:#b8972a;margin-bottom:6px\">LIGHTHOUSE FINANCIAL DAILY</div>\\n  <div style=\"font-size:32px;font-weight:900\">????</div>\\n  <div style=\"font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.3em;margin-top:6px\">{{ $('Set Edition').first().json.editionLabel }} {{ $('Set Edition').first().json.editionTime }}</div>\\n</div>\\n<div style=\"background:#c8102e;color:#fff;padding:8px 32px;text-align:center;font-size:11px;letter-spacing:.15em\">{{ $('Set Edition').first().json.dateLabel }} ? AI ??????</div>\\n<div style=\"padding:24px 32px\">\\n  <div style=\"font-size:12px;color:#6b6560;border-bottom:1px solid #c8c0b0;padding-bottom:12px;margin-bottom:20px;letter-spacing:.1em\">TODAY'S HEADLINES</div>\\n  {{ $('Parse News Data').first().json.newsData.headlines.slice(0,5).map((h) => `\\n  <div style=\"margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e0d8c8\">\\n    <div style=\"font-size:15px;font-weight:700;color:#0f0f0f;margin-bottom:6px;line-height:1.5\">${h.headline}</div>\\n    <div style=\"font-size:12px;color:#6b6560;line-height:1.7;margin-bottom:6px\">${h.summary}</div>\\n    <div style=\"font-size:10px;color:#b8972a\">???${h.source_name}</div>\\n  </div>`).join('') }}\\n</div>\\n<div style=\"padding:16px 32px 28px;text-align:center\">\\n  <a href=\"https://huanyu2001.github.io/HuanYu2001-lighthouse-daily/\" style=\"background:#0f0f0f;color:#f5f0e8;text-decoration:none;padding:12px 28px;font-size:12px;letter-spacing:.15em;display:inline-block\">??????</a>\\n</div>\\n</div>",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Email Notification",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2660, 300],
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail - News Notification"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "?????????(UTC)": { "main": [[{ "node": "Set Edition", "type": "main", "index": 0 }]] },
+    "Set Edition": { "main": [[{ "node": "Gemini Search", "type": "main", "index": 0 }]] },
+    "Gemini Search": { "main": [[{ "node": "Parse News Data", "type": "main", "index": 0 }]] },
+    "Parse News Data": { "main": [[{ "node": "Generate HTML Parts", "type": "main", "index": 0 }]] },
+    "Generate HTML Parts": {
+      "main": [[
+        { "node": "?梁?? index.html ??寞?", "type": "main", "index": 0 },
+        { "node": "?梁???撒??蹓遴???寞?", "type": "main", "index": 0 }
+      ]]
+    },
+    "Build Index HTML": { "main": [[{ "node": "Get Archive List", "type": "main", "index": 0 }]] },
+    "Get Archive List": { "main": [[{ "node": "Update Archive List", "type": "main", "index": 0 }]] },
+    "Update Archive List": { "main": [[{ "node": "Get Index SHA", "type": "main", "index": 0 }]] },
+    "Get Index SHA": { "main": [[{ "node": "Get News Data SHA", "type": "main", "index": 0 }]] },
+    "Get News Data SHA": { "main": [[{ "node": "Prepare GitHub Files", "type": "main", "index": 0 }]] },
+    "Prepare GitHub Files": { "main": [[{ "node": "Push To GitHub", "type": "main", "index": 0 }]] },
+    "Push To GitHub": { "main": [[{ "node": "Send Email Notification", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": ["news", "automation", "GitHub Pages"],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-02T00:00:00.000Z",
+  "versionId": "1"
+}
+
+
