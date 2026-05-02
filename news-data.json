@@ -1,17 +1,46 @@
 {
-  "edition": "morning",
-  "editionLabel": "早報",
-  "editionTime": "07:00",
+  "edition": "noon",
+  "editionLabel": "午報",
+  "editionTime": "12:00",
   "dateStr": "2026-05-02",
-  "dateLabel": "2026年5月2日 星期六",
+  "dateLabel": "2026年5月3日星期日",
   "newsData": {
-    "headlines": [],
+    "headlines": [
+      {
+        "id": 1,
+        "category": "科技",
+        "headline": "新聞資料暫時無法解析",
+        "summary": "Gemini 已回應，但輸出不是可解析的 JSON。請調整提示詞或模型設定。",
+        "source_name": "System Fallback",
+        "source_url": "#",
+        "published_time": "即時",
+        "importance": 1
+      }
+    ],
     "deep_dive": []
   },
-  "headlineCards": "",
-  "deepCards": "",
-  "techNews": [],
+  "techNews": [
+    {
+      "id": 1,
+      "category": "科技",
+      "headline": "新聞資料暫時無法解析",
+      "summary": "Gemini 已回應，但輸出不是可解析的 JSON。請調整提示詞或模型設定。",
+      "source_name": "System Fallback",
+      "source_url": "#",
+      "published_time": "即時",
+      "importance": 1
+    }
+  ],
   "financeNews": [],
   "stockNews": [],
-  "archiveList": []
+  "archiveList": [
+    {
+      "date": "2026-05-02",
+      "edition": "noon",
+      "editionLabel": "午報",
+      "editionTime": "12:00",
+      "dateLabel": "2026年5月3日星期日",
+      "file": "archive/2026-05-02-noon.html"
+    }
+  ]
 }
