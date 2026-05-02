@@ -3,65 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>歷史封存 — 燈塔財經</title>
+<title>歷史封存 | 燈塔財經</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --ink:#0f0f0f;--paper:#f5f0e8;--paper2:#ede8dc;
-  --accent:#c8102e;--gold:#b8972a;--muted:#6b6560;--border:#c8c0b0;
-}
+:root{--ink:#0f0f0f;--paper:#f5f0e8;--paper2:#ede8dc;--accent:#c8102e;--gold:#b8972a;--muted:#6b6560;--border:#c8c0b0;}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;font-weight:300;}
-.masthead{background:var(--ink);color:var(--paper);padding:20px 32px;}
-.masthead-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
-.logo{font-family:'DM Serif Display',serif;font-size:28px;color:white;text-decoration:none;}
-.logo span{color:var(--accent);}
-.back-link{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);text-decoration:none;letter-spacing:0.1em;}
-.back-link:hover{color:white;}
-.page-header{max-width:1200px;margin:0 auto;padding:40px 32px 20px;}
-.page-title{font-family:'DM Serif Display',serif;font-size:40px;margin-bottom:8px;}
-.page-sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.2em;}
-.content{max-width:1200px;margin:0 auto;padding:20px 32px 80px;}
-.month-group{margin-bottom:40px;}
-.month-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:16px;}
-.archive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
-.archive-card{background:var(--paper2);border:1px solid var(--border);padding:16px;text-decoration:none;color:var(--ink);transition:all 0.15s;display:block;}
-.archive-card:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
-.arc-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:6px;}
-.archive-card:hover .arc-date{color:rgba(255,255,255,0.5);}
-.arc-edition{font-family:'Noto Serif TC',serif;font-size:14px;font-weight:600;margin-bottom:4px;}
-.arc-count{font-size:11px;color:var(--muted);}
-.archive-card:hover .arc-count{color:rgba(255,255,255,0.5);}
-footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:24px;font-family:'Space Mono',monospace;font-size:11px;}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;font-weight:300}
+.masthead{background:var(--ink);color:var(--paper);padding:20px 32px}
+.masthead-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'DM Serif Display','Noto Serif TC',serif;font-size:28px;color:#fff;text-decoration:none}.logo span{color:var(--accent)}
+.back-link{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);text-decoration:none;letter-spacing:.1em}.back-link:hover{color:#fff}
+.page-header{max-width:1200px;margin:0 auto;padding:40px 32px 20px}
+.page-title{font-family:'DM Serif Display','Noto Serif TC',serif;font-size:40px;margin-bottom:8px}
+.page-sub{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.2em}
+.content{max-width:1200px;margin:0 auto;padding:20px 32px 80px}
+.month-group{margin-bottom:40px}
+.month-label{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:16px}
+.archive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.archive-card{background:var(--paper2);border:1px solid var(--border);padding:16px;text-decoration:none;color:var(--ink);transition:all .15s;display:block}
+.archive-card:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.arc-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:6px}.archive-card:hover .arc-date{color:rgba(255,255,255,.5)}
+.arc-edition{font-family:'Noto Serif TC',serif;font-size:14px;font-weight:600;margin-bottom:4px}
+.arc-count{font-size:11px;color:var(--muted)}.archive-card:hover .arc-count{color:rgba(255,255,255,.5)}
+footer{background:var(--ink);color:rgba(255,255,255,.4);text-align:center;padding:24px;font-family:'Space Mono',monospace;font-size:11px}
 </style>
 </head>
 <body>
 <header class="masthead">
   <div class="masthead-inner">
     <a href="../index.html" class="logo">燈<span>塔</span>財經</a>
-    <a href="../index.html" class="back-link">← 返回最新版</a>
+    <a href="../index.html" class="back-link">返回首頁</a>
   </div>
 </header>
 
 <div class="page-header">
   <div class="page-title">歷史封存</div>
-  <div class="page-sub">ARCHIVE — ALL EDITIONS</div>
+  <div class="page-sub">ARCHIVE · ALL EDITIONS</div>
 </div>
 
 <div class="content">
   <div id="archive-container">
     <div class="month-group">
-      <div class="month-label">本月封存</div>
+      <div class="month-label">最新封存</div>
       <div class="archive-grid" id="archive-grid">
-        <!-- 由 n8n 動態注入 -->
-        <div style="color:var(--muted);font-family:'Noto Serif TC',serif;padding:20px 0;">尚無封存資料，首次執行後將自動建立。</div>
+        <div style="color:var(--muted);font-family:'Noto Serif TC',serif;padding:20px 0;">尚無封存資料，首次執行流程後將自動建立。</div>
       </div>
     </div>
   </div>
 </div>
 
-<footer>燈塔財經 — 歷史封存庫</footer>
+<footer>燈塔財經 · 歷史封存頁</footer>
 <script src="../news-render.js"></script>
 </body>
 </html>

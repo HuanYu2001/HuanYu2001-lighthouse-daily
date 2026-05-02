@@ -1,0 +1,425 @@
+{
+  "name": "燈塔財經 - AI 自動更新",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 23 * * *"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0 4 * * *"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger (UTC)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        300
+      ],
+      "notes": "台灣時間 07:00 / 12:00 / 18:00 對應 UTC 23:00 / 04:00 / 10:00"
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst taipei = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));\nconst hour = taipei.getHours();\n\nlet edition = 'morning';\nlet editionLabel = '早報';\nlet editionTime = '07:00';\n\nif (hour >= 18) {\n  edition = 'evening';\n  editionLabel = '晚報';\n  editionTime = '18:00';\n} else if (hour >= 12) {\n  edition = 'noon';\n  editionLabel = '午報';\n  editionTime = '12:00';\n}\n\nconst dateStr = [\n  taipei.getFullYear(),\n  String(taipei.getMonth() + 1).padStart(2, '0'),\n  String(taipei.getDate()).padStart(2, '0')\n].join('-');\n\nconst dateLabel = taipei.toLocaleDateString('zh-TW', {\n  timeZone: 'Asia/Taipei',\n  year: 'numeric',\n  month: 'long',\n  day: 'numeric',\n  weekday: 'long'\n});\n\nreturn [{\n  json: {\n    edition,\n    editionLabel,\n    editionTime,\n    dateStr,\n    dateLabel\n  }\n}];"
+      },
+      "id": "set-edition",
+      "name": "Set Edition",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"tools\":[{\"google_search\":{}}],\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"請使用 Google Search 搜尋 {{ $json.dateLabel }} 最值得關注的台灣與國際科技、財經、台股新聞。請只輸出 JSON，不要輸出 markdown code block。\\n\\n輸出格式：\\n{\\n  \\\"headlines\\\": [\\n    {\\n      \\\"id\\\": 1,\\n      \\\"category\\\": \\\"科技|財經|台股\\\",\\n      \\\"headline\\\": \\\"標題\\\",\\n      \\\"summary\\\": \\\"70 到 120 字的繁體中文摘要\\\",\\n      \\\"source_name\\\": \\\"媒體名稱\\\",\\n      \\\"source_url\\\": \\\"https://...\\\",\\n      \\\"published_time\\\": \\\"時間或日期\\\",\\n      \\\"importance\\\": 1\\n    }\\n  ],\\n  \\\"deep_dive\\\": [\\n    {\\n      \\\"id\\\": 1,\\n      \\\"category\\\": \\\"科技|財經|台股\\\",\\n      \\\"title\\\": \\\"深度觀察標題\\\",\\n      \\\"analysis\\\": \\\"120 到 220 字的繁體中文分析\\\",\\n      \\\"source_name\\\": \\\"媒體名稱\\\",\\n      \\\"source_url\\\": \\\"https://...\\\"\\n    }\\n  ]\\n}\\n\\n規則：\\n1. headlines 請提供 6 筆。\\n2. deep_dive 請提供 3 筆。\\n3. 類別只能用 科技、財經、台股。\\n4. 每筆都必須包含可點擊的原始來源網址。\\n5. 內容請使用繁體中文。\"}]}]}",
+        "options": {}
+      },
+      "id": "gemini-search",
+      "name": "Gemini Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        300
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "name": "Gemini API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst edition = $('Set Edition').first().json;\n\nconst fallback = {\n  headlines: [\n    {\n      id: 1,\n      category: '科技',\n      headline: 'AI 新聞資料暫時無法解析',\n      summary: 'Gemini API 已回應，但內容未能成功轉成指定的 JSON 格式，請檢查提示詞或 API 回傳內容。',\n      source_name: 'System Fallback',\n      source_url: '#',\n      published_time: '即時',\n      importance: 1\n    }\n  ],\n  deep_dive: []\n};\n\nfunction normalizeCategory(value) {\n  if (value === '科技' || value === '財經' || value === '台股') return value;\n  if (!value) return '科技';\n  const text = String(value);\n  if (text.includes('股')) return '台股';\n  if (text.includes('財') || text.includes('經')) return '財經';\n  return '科技';\n}\n\nlet newsData = fallback;\n\ntry {\n  const candidates = response.candidates || [];\n  if (!candidates.length) throw new Error('No candidates');\n\n  const parts = candidates[0].content?.parts || [];\n  let text = parts.map((part) => part.text || '').join('').trim();\n  text = text.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n\n  const parsed = JSON.parse(text);\n  const headlines = Array.isArray(parsed.headlines) ? parsed.headlines : [];\n  const deepDive = Array.isArray(parsed.deep_dive) ? parsed.deep_dive : [];\n\n  newsData = {\n    headlines: headlines.map((item, index) => ({\n      id: index + 1,\n      category: normalizeCategory(item.category),\n      headline: String(item.headline || '').trim(),\n      summary: String(item.summary || '').trim(),\n      source_name: String(item.source_name || '').trim(),\n      source_url: String(item.source_url || '#').trim() || '#',\n      published_time: String(item.published_time || '').trim(),\n      importance: Number(item.importance || index + 1)\n    })).filter((item) => item.headline),\n    deep_dive: deepDive.map((item, index) => ({\n      id: index + 1,\n      category: normalizeCategory(item.category),\n      title: String(item.title || '').trim(),\n      analysis: String(item.analysis || '').trim(),\n      source_name: String(item.source_name || '').trim(),\n      source_url: String(item.source_url || '#').trim() || '#'\n    })).filter((item) => item.title)\n  };\n\n  if (!newsData.headlines.length) newsData = fallback;\n} catch (error) {\n  newsData = fallback;\n}\n\nconst techNews = newsData.headlines.filter((item) => item.category === '科技');\nconst financeNews = newsData.headlines.filter((item) => item.category === '財經');\nconst stockNews = newsData.headlines.filter((item) => item.category === '台股');\n\nreturn [{\n  json: {\n    ...edition,\n    newsData,\n    techNews,\n    financeNews,\n    stockNews\n  }\n}];"
+      },
+      "id": "parse-news",
+      "name": "Parse News Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst { edition, editionLabel, editionTime, dateStr, dateLabel, newsData } = data;\n\nfunction escapeHtml(value = '') {\n  return String(value)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace(/\"/g, '&quot;')\n    .replace(/'/g, '&#39;');\n}\n\nfunction tagClass(category) {\n  if (category === '財經') return 'tag-finance';\n  if (category === '台股') return 'tag-stock';\n  return 'tag-tech';\n}\n\nconst headlineCards = (newsData.headlines || []).map((item, index) => `\n  <article class=\"card\">\n    <div class=\"card-number\">${String(index + 1).padStart(2, '0')}</div>\n    <span class=\"card-tag ${tagClass(item.category)}\">${escapeHtml(item.category)}</span>\n    <h2 class=\"card-headline\">${escapeHtml(item.headline)}</h2>\n    <p class=\"card-summary\">${escapeHtml(item.summary)}</p>\n    <div class=\"card-meta\">\n      <a href=\"${escapeHtml(item.source_url)}\" target=\"_blank\" rel=\"noopener\">${escapeHtml(item.source_name)}</a>\n      <span>${escapeHtml(item.published_time)}</span>\n    </div>\n  </article>\n`).join('');\n\nconst deepCards = (newsData.deep_dive || []).map((item, index) => `\n  <article class=\"deep-card\">\n    <div class=\"deep-number\">${String(index + 1).padStart(2, '0')}</div>\n    <div class=\"deep-label\">${escapeHtml(item.category)}</div>\n    <h3 class=\"deep-title\">${escapeHtml(item.title)}</h3>\n    <p class=\"deep-body\">${escapeHtml(item.analysis)}</p>\n    <a class=\"deep-source\" href=\"${escapeHtml(item.source_url)}\" target=\"_blank\" rel=\"noopener\">來源：${escapeHtml(item.source_name)}</a>\n  </article>\n`).join('');\n\nconst archiveFilename = `archive/${dateStr}-${edition}.html`;\nconst archiveHtml = `<!DOCTYPE html>\n<html lang=\"zh-TW\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>${escapeHtml(dateStr)} ${escapeHtml(editionLabel)} | 燈塔財經封存</title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link href=\"https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap\" rel=\"stylesheet\">\n<style>\n:root{--ink:#0f0f0f;--paper:#f5f0e8;--paper2:#ede8dc;--accent:#c8102e;--gold:#b8972a;--muted:#6b6560;--border:#c8c0b0;--tag-tech:#1a3a6b;--tag-finance:#1a5c2a;--tag-stock:#7a1a0a;}\n*{box-sizing:border-box;margin:0;padding:0}\nbody{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;line-height:1.7}\n.header{background:var(--ink);color:#fff;padding:24px 20px}\n.header-inner,.content{max-width:1100px;margin:0 auto}\n.header-inner{display:flex;justify-content:space-between;align-items:center;gap:16px}\n.logo{font-family:'DM Serif Display','Noto Serif TC',serif;font-size:28px;text-decoration:none;color:#fff}.logo span{color:var(--accent)}\n.back-link{color:var(--gold);text-decoration:none;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em}\n.hero{background:linear-gradient(135deg,#111 0%,#222 60%,#3b1b1b 100%);color:#fff;padding:36px 20px}\n.meta{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;color:var(--gold);margin-bottom:10px}\n.hero-title{font-family:'DM Serif Display','Noto Serif TC',serif;font-size:42px;line-height:1.05}\n.content{padding:36px 20px 72px}\n.section-header{display:flex;align-items:center;gap:16px;padding:12px 0 14px;border-bottom:3px solid var(--ink);margin-bottom:24px}.section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--muted)}.section-line{flex:1;height:1px;background:var(--border)}.section-header h2{font-family:'Noto Serif TC',serif;font-size:20px}\n.news-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}.news-grid .card:first-child{grid-column:1/3}\n.card,.deep-card{background:var(--paper);padding:24px;position:relative}.card-tag{display:inline-block;padding:4px 8px;color:#fff;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.16em;margin-bottom:12px}.tag-tech{background:var(--tag-tech)}.tag-finance{background:var(--tag-finance)}.tag-stock{background:var(--tag-stock)}.card-number,.deep-number{position:absolute;top:14px;right:18px;font-family:'DM Serif Display',serif;color:rgba(0,0,0,.12);font-size:30px}.card-headline{font-family:'Noto Serif TC',serif;font-size:18px;line-height:1.45;margin-bottom:10px}.card:first-child .card-headline{font-size:26px}.card-summary,.deep-body{color:var(--muted);font-size:13px;line-height:1.85}.card-meta{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding-top:10px;margin-top:14px;font-family:'Space Mono',monospace;font-size:10px}.card-meta a,.deep-source{color:var(--gold);text-decoration:none}.deep-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}.deep-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--accent);margin-bottom:10px}.deep-title{font-family:'Noto Serif TC',serif;font-size:17px;line-height:1.5;margin-bottom:10px}.deep-source{display:inline-block;margin-top:12px;font-family:'Space Mono',monospace;font-size:10px}\n@media(max-width:768px){.hero-title{font-size:34px}.news-grid,.deep-grid{grid-template-columns:1fr}.news-grid .card:first-child{grid-column:auto}}\n</style>\n</head>\n<body>\n<header class=\"header\">\n  <div class=\"header-inner\">\n    <a class=\"logo\" href=\"../index.html\">燈<span>塔</span>財經</a>\n    <a class=\"back-link\" href=\"../index.html\">返回首頁</a>\n  </div>\n</header>\n<section class=\"hero\">\n  <div class=\"content\">\n    <div class=\"meta\">${escapeHtml(dateStr)} · ${escapeHtml(editionLabel)} · ${escapeHtml(editionTime)}</div>\n    <h1 class=\"hero-title\">${escapeHtml(dateLabel)} ${escapeHtml(editionLabel)}</h1>\n  </div>\n</section>\n<main class=\"content\">\n  <div class=\"section-header\"><div class=\"section-label\">HEADLINES</div><div class=\"section-line\"></div><h2>當期重點新聞</h2></div>\n  <div class=\"news-grid\">${headlineCards}</div>\n  <div style=\"height:36px\"></div>\n  <div class=\"section-header\"><div class=\"section-label\">DEEP DIVE</div><div class=\"section-line\"></div><h2>延伸觀察</h2></div>\n  <div class=\"deep-grid\">${deepCards}</div>\n</main>\n</body>\n</html>`;\n\nreturn [{\n  json: {\n    ...data,\n    archiveFilename,\n    archiveHtml\n  }\n}];"
+      },
+      "id": "build-archive-html",
+      "name": "Build Archive HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/archive-list.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "n8n-news-bot"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "get-archive-list",
+      "name": "Get Archive List",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1420,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const archiveResponse = $input.first().json;\nconst data = $('Build Archive HTML').first().json;\n\nlet archiveList = [];\nlet archiveListSha = null;\n\ntry {\n  if (archiveResponse.content) {\n    archiveList = JSON.parse(Buffer.from(archiveResponse.content, 'base64').toString('utf8'));\n    archiveListSha = archiveResponse.sha || null;\n  }\n} catch (error) {\n  archiveList = [];\n}\n\nconst newEntry = {\n  date: data.dateStr,\n  edition: data.edition,\n  editionLabel: data.editionLabel,\n  editionTime: data.editionTime,\n  dateLabel: data.dateLabel,\n  file: data.archiveFilename\n};\n\narchiveList = archiveList.filter((item) => !(item.date === newEntry.date && item.edition === newEntry.edition));\narchiveList.unshift(newEntry);\narchiveList = archiveList.slice(0, 90);\n\nreturn [{\n  json: {\n    ...data,\n    archiveList,\n    archiveListSha\n  }\n}];"
+      },
+      "id": "update-archive-list",
+      "name": "Update Archive List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/news-data.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "n8n-news-bot"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "get-news-data-sha",
+      "name": "Get News Data SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1900,
+        240
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/{{ $('Update Archive List').first().json.archiveFilename }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "n8n-news-bot"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "get-archive-page-sha",
+      "name": "Get Archive Page SHA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1900,
+        360
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $('Update Archive List').first().json;\nconst newsDataSha = $('Get News Data SHA').first().json.sha || null;\nconst archivePageSha = $('Get Archive Page SHA').first().json.sha || null;\n\nfunction toBase64(value) {\n  return Buffer.from(value, 'utf8').toString('base64');\n}\n\nconst newsDataPayload = {\n  edition: data.edition,\n  editionLabel: data.editionLabel,\n  editionTime: data.editionTime,\n  dateStr: data.dateStr,\n  dateLabel: data.dateLabel,\n  newsData: data.newsData,\n  techNews: data.techNews,\n  financeNews: data.financeNews,\n  stockNews: data.stockNews,\n  archiveList: data.archiveList\n};\n\nreturn [\n  {\n    json: {\n      path: 'news-data.json',\n      content: toBase64(JSON.stringify(newsDataPayload, null, 2)),\n      sha: newsDataSha,\n      message: `[${data.editionLabel}] ${data.dateStr} ${data.editionTime} 更新新聞資料`\n    }\n  },\n  {\n    json: {\n      path: 'archive-list.json',\n      content: toBase64(JSON.stringify(data.archiveList, null, 2)),\n      sha: data.archiveListSha,\n      message: `${data.dateStr} 更新 archive-list`\n    }\n  },\n  {\n    json: {\n      path: data.archiveFilename,\n      content: toBase64(data.archiveHtml),\n      sha: archivePageSha,\n      message: `${data.dateStr} ${data.editionLabel} 新增封存頁`\n    }\n  }\n];"
+      },
+      "id": "prepare-github-files",
+      "name": "Prepare GitHub Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2140,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/HuanYu2001/HuanYu2001-lighthouse-daily/contents/{{ $json.path }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            },
+            {
+              "name": "User-Agent",
+              "value": "n8n-news-bot"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { message: $json.message, content: $json.content, ...( $json.sha ? { sha: $json.sha } : {} ) } }}",
+        "options": {}
+      },
+      "id": "push-to-github",
+      "name": "Push To GitHub",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2380,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "GitHub PAT - Simple"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (UTC)": {
+      "main": [
+        [
+          {
+            "node": "Set Edition",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Edition": {
+      "main": [
+        [
+          {
+            "node": "Gemini Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Search": {
+      "main": [
+        [
+          {
+            "node": "Parse News Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse News Data": {
+      "main": [
+        [
+          {
+            "node": "Build Archive HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Archive HTML": {
+      "main": [
+        [
+          {
+            "node": "Get Archive List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Archive List": {
+      "main": [
+        [
+          {
+            "node": "Update Archive List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Archive List": {
+      "main": [
+        [
+          {
+            "node": "Get News Data SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get News Data SHA": {
+      "main": [
+        [
+          {
+            "node": "Get Archive Page SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Archive Page SHA": {
+      "main": [
+        [
+          {
+            "node": "Prepare GitHub Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare GitHub Files": {
+      "main": [
+        [
+          {
+            "node": "Push To GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    "news",
+    "automation",
+    "GitHub Pages"
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-02T00:00:00.000Z",
+  "versionId": "2"
+}

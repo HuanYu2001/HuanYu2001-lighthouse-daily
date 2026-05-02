@@ -15,16 +15,11 @@ Static news site for GitHub Pages, with content updated by `n8n` and Google AI S
 ## Before first deploy
 
 1. Create or confirm your GitHub repository.
-2. Replace these placeholders inside `n8n-workflow.json`:
-   - `HuanYu2001`
-   - `HuanYu2001-lighthouse-daily`
-   - `YOUR_NOTIFICATION_EMAIL@example.com`
-3. Import the workflow into n8n.
-4. Configure credentials in n8n:
+2. Import the workflow into n8n.
+3. Configure credentials in n8n:
    - GitHub PAT
    - Gemini API key
-   - Gmail OAuth2 if you want email notifications
-5. Run the workflow once manually.
+4. Run the workflow once manually.
 
 ## Connect this local folder to GitHub
 
@@ -61,6 +56,5 @@ Your site URL will be:
 ## Notes
 
 - `news-data.json` and `archive-list.json` are included so the site does not start with missing-file errors.
-- The workflow still needs valid repo info and credentials before it can publish updates.
-- The email node still contains one hardcoded site URL inside its HTML body. Update it in n8n after import if your repo name differs.
-- If you do not need email notifications, disable the Gmail node in n8n before activating the workflow.
+- The workflow still needs valid GitHub and Gemini credentials before it can publish updates.
+- The current workflow only updates `news-data.json`, `archive-list.json`, and archive pages. The home and category pages read data from `news-data.json` directly.
