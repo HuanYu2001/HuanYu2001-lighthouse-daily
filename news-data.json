@@ -9,88 +9,88 @@
       {
         "id": 1,
         "category": "科技",
-        "headline": "全球AI晶片需求續旺，供應鏈產能滿載至下半年",
-        "summary": "2026年全球人工智慧（AI）晶片需求持續強勁，主要晶圓代工廠及IC設計公司訂單能見度高，預計產能將持續滿載至下半年。這波熱潮不僅帶動先進製程需求，也讓相關封測、設備供應商同步受惠，展現AI產業鏈的強大拉貨動能，市場預期營收將再創新高。",
-        "source_name": "科技新報",
-        "source_url": "https://technews.tw/2026/05/02/ai-chip-demand-strong/",
+        "headline": "AI晶片設計迎來新突破，運算效率大幅提升",
+        "summary": "業界龍頭公司成功發表新一代AI處理器架構，宣稱能將特定運算任務的效率提升20%以上，預計將加速AI模型訓練與部署，對雲端服務及邊緣運算市場帶來革命性影響。各大科技廠已積極評估導入新技術，有望刺激相關供應鏈商機。",
+        "source_name": "今日科技财经速览",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFMNdPG2dyfI3XmCQC4xw3XQmhSGX5VSPyiQvpI8h1Bg8EZ83jOWQTU9RiuFUa3bMh_AzkPuwNhWr3LYhJsouHt65XzVqQ2VGbEy8AZ6MzUvW4QaVS0diaMYSVxzaTnbyNoWZueglD6PFpU1BbMtNpu",
         "published_time": "2026年5月2日",
-        "importance": 1
+        "importance": 5
       },
       {
         "id": 2,
-        "category": "科技",
-        "headline": "摺疊手機技術突破，下世代旗艦機款設計成新焦點",
-        "summary": "多家智慧手機品牌廠預計在2026年下半年推出新款摺疊手機，業界分析其在螢幕耐用度、電池續航及輕薄化設計上均有顯著突破。隨著技術逐漸成熟，摺疊機的製造成本可望進一步降低，有助於擴大市場滲透率，成為高階手機市場的新成長引擎。",
-        "source_name": "電子時報",
-        "source_url": "https://www.digitimes.com.tw/tech/2026/05/02/foldable-phone-tech/",
+        "category": "財經",
+        "headline": "全球製造業PMI數據優於預期，經濟復甦前景更趨明朗",
+        "summary": "最新公布的全球製造業採購經理人指數（PMI）連續三個月維持在擴張區間，且本月數據超越市場預期，顯示全球經濟活動穩健回升。分析師指出，消費需求釋放與供應鏈問題緩解是主要推動力，為企業營收成長帶來正面展望。",
+        "source_name": "人民網－人民日報",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEYEyNgOgY0ZDey_GVNgkLczyO3iVWvUEth1AW-P1mNNmhUk986N2o6s9aLGqXwBoqut_CTq30WSImeldLLBz80yV_qEED0hBqnX1GeUSa5DU-pqjPJ-z7AYewirsHAf_MHYHbqZHxiOYrmjL9XJrGywdKlkYEc0-TPQw",
         "published_time": "2026年5月2日",
-        "importance": 1
+        "importance": 4
       },
       {
         "id": 3,
-        "category": "財經",
-        "headline": "美國最新通膨數據公布，市場關注聯準會利率走向",
-        "summary": "美國勞工部公布最新消費者物價指數（CPI），數據略低於市場預期，引發投資人對聯準會（Fed）貨幣政策走向的熱烈討論。雖然通膨壓力有所緩解，Fed官員對未來降息仍持謹慎態度，強調將依據經濟數據彈性調整，全球金融市場因此保持高度觀望。",
-        "source_name": "華爾街日報",
-        "source_url": "https://www.wsj.com/2026/05/02/us-inflation-fed/",
+        "category": "台股",
+        "headline": "台積電ADR盤後強勢上漲，市場樂觀看待其下半年營運",
+        "summary": "台積電（2330）於美國存託憑證（ADR）市場盤後交易中錄得顯著漲幅，主要受惠於市場分析師對其下半年先進製程訂單的樂觀預期。法人圈普遍認為，AI晶片需求激增將持續推動台積電營收成長，為台股半導體板塊注入強心針。",
+        "source_name": "工商時報",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGjLC99aNKcXNP4fQXWCcA-i7FBq3xam-rfZvg9dxk2erS0sJFnStm25e13bl4MytC-SSmeJcejKlm1XiD1IZajed0ROY5F1N3ivMRmETjCDI1hEYT4DoQN0TyMhpkVaCQuD3RqYTVSovXTtNtC",
         "published_time": "2026年5月2日",
-        "importance": 1
+        "importance": 5
       },
       {
         "id": 4,
-        "category": "財經",
-        "headline": "國際油價小幅波動，地緣政治風險與供給面變化交織",
-        "summary": "受中東地緣政治緊張局勢影響，國際原油價格在每桶80美元附近震盪，儘管OPEC+維持現行產量政策，但市場對於未來供應鏈穩定性仍存疑慮。分析師指出，全球經濟復甦前景與能源轉型進程也將持續影響油價走勢。",
-        "source_name": "彭博社",
-        "source_url": "https://www.bloomberg.com/2026/05/02/oil-price-volatility/",
+        "category": "科技",
+        "headline": "Meta收購機器人AI公司，加速人形機器人技術布局",
+        "summary": "Meta完成對Assured Robot Intelligence的收購，其團隊將併入Meta超級智能實驗室，此舉旨在加速人形機器人技術布局，與特斯拉、谷歌等科技巨頭形成直接競爭。同時，宇樹科技推出低價雙臂人形機器人，開啟行業價格戰。",
+        "source_name": "今日科技财经速览 / 新浪",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFMNdPG2dyfI3XmCQC4xw3XQmhSGX5VSPyiQvpI8h1Bg8EZ83jOWQTU9RiuFUa3bMh_AzkPuwNhWr3LYhJsouHt65XzVqQ2VGbEy8AZ6MzUvW4QaVS0diaMYSVxzaTnbyNoWZueglD6PFpU1BbMtNpu",
         "published_time": "2026年5月2日",
-        "importance": 1
+        "importance": 4
       },
       {
         "id": 5,
-        "category": "台股",
-        "headline": "台積電強勁法說會展望，激勵台股半導體族群走揚",
-        "summary": "晶圓代工龍頭台積電於最新法說會上，對第二季及全年營運釋出樂觀展望，強調AI相關需求持續增長，先進製程產能利用率滿載。此一消息激勵台股半導體供應鏈類股表現強勁，包括IC設計、設備及封測廠等股價同步上漲，推升大盤指數。",
-        "source_name": "中央社",
-        "source_url": "https://www.cna.com.tw/news/afe/202605020123.aspx",
+        "category": "財經",
+        "headline": "美聯儲官員暗示通膨壓力趨緩，市場關注降息預期",
+        "summary": "美聯儲官員卡什卡利表示，足夠大的價格衝擊可能危及通脹預期，可能需要通過一系列加息以維護公信力，但哈瑪克認為明確的寬鬆傾向已不再合適。市場對此解讀為升息週期可能已近尾聲，投資人正密切關注聯準會未來的利率路徑。",
+        "source_name": "群益期貨",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGkLAbdHaQ_0QipL2BF-rware7gJ1jQg9bliLRmWwrJKvC2AbBdkLvEDyHPPdC0bnEvBrYcdxvujA9brrMr58VcmDNUBsGmP5fdJqZxu0-w3GAVLxgO4pwn184A7ENrOMc4TBRkk5-l-GEXFPRWC1TbkVVHcSHmo0wMLO7zuISyiOanlWqoH2Npb64KNys-PeYnTZT5thXt",
         "published_time": "2026年5月2日",
-        "importance": 1
+        "importance": 4
       },
       {
         "id": 6,
         "category": "台股",
-        "headline": "傳產股受惠全球景氣復甦，鋼鐵、航運營收動能佳",
-        "summary": "隨著全球經濟景氣逐漸復甦，出口需求明顯回溫，台灣傳產類股如鋼鐵、航運族群營收動能表現亮眼。尤其航運業在主要航線運價持穩下，營收獲利成長可期；鋼鐵業則受惠於基建需求增加，訂單能見度提升，吸引法人買盤進駐。",
-        "source_name": "工商時報",
-        "source_url": "https://ctee.com.tw/news/stock/20260502001.html",
+        "headline": "AI伺服器概念股買氣旺盛，信驊目標價獲大摩調升",
+        "summary": "隨著全球AI產業快速發展，AI伺服器需求持續爆發，台灣相關供應鏈廠商股價表現強勁。摩根士丹利（大摩）看好股王信驊在伺服器管理晶片（BMC）領域的成長潛力，將其目標價由15555元大幅調升至20000元，顯示法人對AI概念股的強烈信心。",
+        "source_name": "FTNN新聞網 財經",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFzMVwqpgUDKWI8pEl83l0CDZIm9bgTSC6SKEDx1GmO9wvcuku4qMpDLYvx3pxPmJkoaUPFIGt6U-OqfUeB3oc76VqPEABiJXGk50fQ7LQefO12Gt30alQ2XOSlWxK7",
         "published_time": "2026年5月2日",
-        "importance": 1
+        "importance": 5
       }
     ],
     "deep_dive": [
       {
         "id": 1,
         "category": "科技",
-        "title": "AI晶片戰略布局：台廠如何鞏固全球領先地位？",
-        "analysis": "2026年AI晶片市場持續擴張，台灣在全球半導體供應鏈中扮演關鍵角色。從晶圓代工到IC設計，台廠憑藉技術領先和彈性製造優勢，成為AI巨頭不可或缺的合作夥伴。面對國際競爭，台廠應持續投入研發、擴大高階產能，並強化與國際大廠的生態系合作，以鞏固其在全球AI晶片領域的戰略地位。同時，人才培育和供應鏈韌性也是未來發展的重點，確保台灣在全球AI競賽中保持領先。",
-        "source_name": "經濟日報",
-        "source_url": "https://money.udn.com/money/story/5612/2026/05/02/ai-chip-taiwan-strategy"
+        "title": "生成式AI應用落地：企業數位轉型的關鍵驅動力",
+        "analysis": "2026年，生成式AI已從實驗室走向企業實際應用，成為各行各業數位轉型的核心動能。YC 2026夏季投資清單顯示，AI已從「外掛」走向「底層基礎建設」。然而，企業導入仍面臨數據安全、模型可靠性及人才技能缺口等挑戰。成功的關鍵在於平衡技術創新與風險管理，並培養跨領域專業人才，才能最大化生成式AI的商業價值。",
+        "source_name": "TechNews 科技新報",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFsRYlmBNy_9QuPkYuhHtRw_sMtPOQ21spgUWn6q4Qxw_OG7vq3XSHl8-YAjBIatRiGFdBqiLXv1XZlk3Nr9sq7JTcgsu7pEYVytKHXa6sUvN2QoCbM2fpSSWji6ZQStegZfS0huKHCkea7dCQEaKoQSZ6UlxA-hp8"
       },
       {
         "id": 2,
         "category": "財經",
-        "title": "聯準會政策轉向預期下的全球資本市場變局",
-        "analysis": "美國聯準會的貨幣政策走向，對全球資本市場具有舉足輕重的影響。儘管最新通膨數據顯示壓力有所緩解，市場對於降息時程的預期仍舊分歧。若聯準會啟動降息，將有利於新興市場資金流入，並刺激風險資產表現；反之，若高利率政策持續，則可能對全球經濟增長造成壓力。投資人需密切關注各國央行政策動態，以及全球經濟數據的變化，適時調整投資策略以應對潛在的市場波動。",
-        "source_name": "財訊快報",
-        "source_url": "https://www.fi.com.tw/news/2026/05/02/fed-policy-impact"
+        "title": "全球央行貨幣政策展望：通膨與經濟成長的兩難",
+        "analysis": "隨著全球經濟逐步走出疫情陰霾，各國央行在控制通膨與支持經濟成長之間面臨微妙平衡。儘管部分地區通膨壓力開始緩解，但地緣政治風險與能源價格波動仍是潛在威脅。分析師預期，多數主要央行將維持謹慎態度，短期內降息空間有限。此外，美聯儲官員對降息存在嚴重分歧，市場對油價衝擊仍不以為意，通膨與利率變化需高度關注。",
+        "source_name": "群益期貨 / 鉅亨網",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGkLAbdHaQ_0QipL2BF-rware7gJ1jQg9bliLRmWwrJKvC2AbBdkLvEDyHPPdC0bnEvBrYcdxvujA9brrMr58VcmDNUBsGmP5fdJqZxu0-w3GAVLxgO4pwn184A7ENrOMc4TBRkk5-l-GEXFPRWC1TbkVVHcSHmo0wMLO7zuISyiOanlWqoH2Npb64KNys-PeYnTZT5thXt"
       },
       {
         "id": 3,
         "category": "台股",
-        "title": "外資持續買超台股，半導體與AI概念股成關注焦點",
-        "analysis": "近期台股在外資持續買超下，大盤指數表現強勁，尤其半導體與AI概念股更是外資布局的重點。隨著全球AI產業進入高速發展期，台灣科技廠在全球供應鏈中的關鍵地位，吸引國際資金持續湧入。台積電等權值股的穩定表現，不僅提供大盤支撐，也帶動相關零組件、設備廠的成長。然而，投資人仍需留意全球經濟情勢、地緣政治風險及匯率變動對台股的潛在影響，審慎評估投資組合。",
-        "source_name": "鉅亨網",
-        "source_url": "https://news.cnyes.com/news/id/2026050200123"
+        "title": "2026年台股展望：半導體領軍，AI概念股與520行情備受期待",
+        "analysis": "展望2026年台股，半導體產業仍是領漲火車頭，尤其在AI、高效能運算及車用電子等領域的強勁需求下，台積電及相關供應商將持續受惠。法人樂觀預期台股可望延續「微笑曲線」走勢，大盤上看43000點。此外，5月為股東會旺季，將牽動近30兆元市值波動，融券強制回補與高股息題材有望帶動股價上揚，加溫520行情。",
+        "source_name": "經濟日報 / 工商時報",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGjLC99aNKcXNP4fQXWCcA-i7FBq3xam-rfZvg9dxk2erS0sJFnStm25e13bl4MytC-SSmeJcejKlm1XiD1IZajed0ROY5F1N3ivMRmETjCDI1hEYT4DoQN0TyMhpkVaCQuD3RqYTVSovXTtNtC"
       }
     ]
   },
@@ -98,66 +98,66 @@
     {
       "id": 1,
       "category": "科技",
-      "headline": "全球AI晶片需求續旺，供應鏈產能滿載至下半年",
-      "summary": "2026年全球人工智慧（AI）晶片需求持續強勁，主要晶圓代工廠及IC設計公司訂單能見度高，預計產能將持續滿載至下半年。這波熱潮不僅帶動先進製程需求，也讓相關封測、設備供應商同步受惠，展現AI產業鏈的強大拉貨動能，市場預期營收將再創新高。",
-      "source_name": "科技新報",
-      "source_url": "https://technews.tw/2026/05/02/ai-chip-demand-strong/",
+      "headline": "AI晶片設計迎來新突破，運算效率大幅提升",
+      "summary": "業界龍頭公司成功發表新一代AI處理器架構，宣稱能將特定運算任務的效率提升20%以上，預計將加速AI模型訓練與部署，對雲端服務及邊緣運算市場帶來革命性影響。各大科技廠已積極評估導入新技術，有望刺激相關供應鏈商機。",
+      "source_name": "今日科技财经速览",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFMNdPG2dyfI3XmCQC4xw3XQmhSGX5VSPyiQvpI8h1Bg8EZ83jOWQTU9RiuFUa3bMh_AzkPuwNhWr3LYhJsouHt65XzVqQ2VGbEy8AZ6MzUvW4QaVS0diaMYSVxzaTnbyNoWZueglD6PFpU1BbMtNpu",
       "published_time": "2026年5月2日",
-      "importance": 1
+      "importance": 5
     },
     {
-      "id": 2,
+      "id": 4,
       "category": "科技",
-      "headline": "摺疊手機技術突破，下世代旗艦機款設計成新焦點",
-      "summary": "多家智慧手機品牌廠預計在2026年下半年推出新款摺疊手機，業界分析其在螢幕耐用度、電池續航及輕薄化設計上均有顯著突破。隨著技術逐漸成熟，摺疊機的製造成本可望進一步降低，有助於擴大市場滲透率，成為高階手機市場的新成長引擎。",
-      "source_name": "電子時報",
-      "source_url": "https://www.digitimes.com.tw/tech/2026/05/02/foldable-phone-tech/",
+      "headline": "Meta收購機器人AI公司，加速人形機器人技術布局",
+      "summary": "Meta完成對Assured Robot Intelligence的收購，其團隊將併入Meta超級智能實驗室，此舉旨在加速人形機器人技術布局，與特斯拉、谷歌等科技巨頭形成直接競爭。同時，宇樹科技推出低價雙臂人形機器人，開啟行業價格戰。",
+      "source_name": "今日科技财经速览 / 新浪",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFMNdPG2dyfI3XmCQC4xw3XQmhSGX5VSPyiQvpI8h1Bg8EZ83jOWQTU9RiuFUa3bMh_AzkPuwNhWr3LYhJsouHt65XzVqQ2VGbEy8AZ6MzUvW4QaVS0diaMYSVxzaTnbyNoWZueglD6PFpU1BbMtNpu",
       "published_time": "2026年5月2日",
-      "importance": 1
+      "importance": 4
     }
   ],
   "financeNews": [
     {
-      "id": 3,
+      "id": 2,
       "category": "財經",
-      "headline": "美國最新通膨數據公布，市場關注聯準會利率走向",
-      "summary": "美國勞工部公布最新消費者物價指數（CPI），數據略低於市場預期，引發投資人對聯準會（Fed）貨幣政策走向的熱烈討論。雖然通膨壓力有所緩解，Fed官員對未來降息仍持謹慎態度，強調將依據經濟數據彈性調整，全球金融市場因此保持高度觀望。",
-      "source_name": "華爾街日報",
-      "source_url": "https://www.wsj.com/2026/05/02/us-inflation-fed/",
+      "headline": "全球製造業PMI數據優於預期，經濟復甦前景更趨明朗",
+      "summary": "最新公布的全球製造業採購經理人指數（PMI）連續三個月維持在擴張區間，且本月數據超越市場預期，顯示全球經濟活動穩健回升。分析師指出，消費需求釋放與供應鏈問題緩解是主要推動力，為企業營收成長帶來正面展望。",
+      "source_name": "人民網－人民日報",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEYEyNgOgY0ZDey_GVNgkLczyO3iVWvUEth1AW-P1mNNmhUk986N2o6s9aLGqXwBoqut_CTq30WSImeldLLBz80yV_qEED0hBqnX1GeUSa5DU-pqjPJ-z7AYewirsHAf_MHYHbqZHxiOYrmjL9XJrGywdKlkYEc0-TPQw",
       "published_time": "2026年5月2日",
-      "importance": 1
+      "importance": 4
     },
     {
-      "id": 4,
+      "id": 5,
       "category": "財經",
-      "headline": "國際油價小幅波動，地緣政治風險與供給面變化交織",
-      "summary": "受中東地緣政治緊張局勢影響，國際原油價格在每桶80美元附近震盪，儘管OPEC+維持現行產量政策，但市場對於未來供應鏈穩定性仍存疑慮。分析師指出，全球經濟復甦前景與能源轉型進程也將持續影響油價走勢。",
-      "source_name": "彭博社",
-      "source_url": "https://www.bloomberg.com/2026/05/02/oil-price-volatility/",
+      "headline": "美聯儲官員暗示通膨壓力趨緩，市場關注降息預期",
+      "summary": "美聯儲官員卡什卡利表示，足夠大的價格衝擊可能危及通脹預期，可能需要通過一系列加息以維護公信力，但哈瑪克認為明確的寬鬆傾向已不再合適。市場對此解讀為升息週期可能已近尾聲，投資人正密切關注聯準會未來的利率路徑。",
+      "source_name": "群益期貨",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGkLAbdHaQ_0QipL2BF-rware7gJ1jQg9bliLRmWwrJKvC2AbBdkLvEDyHPPdC0bnEvBrYcdxvujA9brrMr58VcmDNUBsGmP5fdJqZxu0-w3GAVLxgO4pwn184A7ENrOMc4TBRkk5-l-GEXFPRWC1TbkVVHcSHmo0wMLO7zuISyiOanlWqoH2Npb64KNys-PeYnTZT5thXt",
       "published_time": "2026年5月2日",
-      "importance": 1
+      "importance": 4
     }
   ],
   "stockNews": [
     {
-      "id": 5,
+      "id": 3,
       "category": "台股",
-      "headline": "台積電強勁法說會展望，激勵台股半導體族群走揚",
-      "summary": "晶圓代工龍頭台積電於最新法說會上，對第二季及全年營運釋出樂觀展望，強調AI相關需求持續增長，先進製程產能利用率滿載。此一消息激勵台股半導體供應鏈類股表現強勁，包括IC設計、設備及封測廠等股價同步上漲，推升大盤指數。",
-      "source_name": "中央社",
-      "source_url": "https://www.cna.com.tw/news/afe/202605020123.aspx",
+      "headline": "台積電ADR盤後強勢上漲，市場樂觀看待其下半年營運",
+      "summary": "台積電（2330）於美國存託憑證（ADR）市場盤後交易中錄得顯著漲幅，主要受惠於市場分析師對其下半年先進製程訂單的樂觀預期。法人圈普遍認為，AI晶片需求激增將持續推動台積電營收成長，為台股半導體板塊注入強心針。",
+      "source_name": "工商時報",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGjLC99aNKcXNP4fQXWCcA-i7FBq3xam-rfZvg9dxk2erS0sJFnStm25e13bl4MytC-SSmeJcejKlm1XiD1IZajed0ROY5F1N3ivMRmETjCDI1hEYT4DoQN0TyMhpkVaCQuD3RqYTVSovXTtNtC",
       "published_time": "2026年5月2日",
-      "importance": 1
+      "importance": 5
     },
     {
       "id": 6,
       "category": "台股",
-      "headline": "傳產股受惠全球景氣復甦，鋼鐵、航運營收動能佳",
-      "summary": "隨著全球經濟景氣逐漸復甦，出口需求明顯回溫，台灣傳產類股如鋼鐵、航運族群營收動能表現亮眼。尤其航運業在主要航線運價持穩下，營收獲利成長可期；鋼鐵業則受惠於基建需求增加，訂單能見度提升，吸引法人買盤進駐。",
-      "source_name": "工商時報",
-      "source_url": "https://ctee.com.tw/news/stock/20260502001.html",
+      "headline": "AI伺服器概念股買氣旺盛，信驊目標價獲大摩調升",
+      "summary": "隨著全球AI產業快速發展，AI伺服器需求持續爆發，台灣相關供應鏈廠商股價表現強勁。摩根士丹利（大摩）看好股王信驊在伺服器管理晶片（BMC）領域的成長潛力，將其目標價由15555元大幅調升至20000元，顯示法人對AI概念股的強烈信心。",
+      "source_name": "FTNN新聞網 財經",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFzMVwqpgUDKWI8pEl83l0CDZIm9bgTSC6SKEDx1GmO9wvcuku4qMpDLYvx3pxPmJkoaUPFIGt6U-OqfUeB3oc76VqPEABiJXGk50fQ7LQefO12Gt30alQ2XOSlWxK7",
       "published_time": "2026年5月2日",
-      "importance": 1
+      "importance": 5
     }
   ],
   "archiveList": [
