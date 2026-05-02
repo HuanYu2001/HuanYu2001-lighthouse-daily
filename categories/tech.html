@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>科技新聞 — 燈塔財經</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f0f0f;--paper:#f5f0e8;--paper2:#ede8dc;--accent:#1a3a6b;--gold:#b8972a;--muted:#6b6560;--border:#c8c0b0;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif;font-weight:300;}
+.masthead{background:var(--ink);padding:20px 32px;}
+.masthead-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:'DM Serif Display',serif;font-size:28px;color:white;text-decoration:none;}
+.logo span{color:#c8102e;}
+.back-link{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);text-decoration:none;}
+.cat-hero{background:var(--accent);color:white;padding:40px 32px;}
+.cat-hero-inner{max-width:1200px;margin:0 auto;}
+.cat-en{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.3em;opacity:0.6;margin-bottom:8px;}
+.cat-title{font-family:'DM Serif Display',serif;font-size:52px;}
+.cat-desc{font-family:'Noto Serif TC',serif;font-size:14px;opacity:0.8;margin-top:8px;letter-spacing:0.05em;}
+.content{max-width:1200px;margin:0 auto;padding:40px 32px 80px;}
+.news-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);}
+.news-item{background:var(--paper);padding:24px 28px;display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:start;text-decoration:none;color:var(--ink);transition:background 0.15s;}
+.news-item:hover{background:#efe9dc;}
+.item-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;line-height:1.6;padding-top:4px;}
+.item-headline{font-family:'Noto Serif TC',serif;font-size:17px;font-weight:700;margin-bottom:8px;line-height:1.5;}
+.item-summary{font-size:13px;color:var(--muted);line-height:1.8;}
+.item-source{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);margin-top:10px;}
+footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:24px;font-family:'Space Mono',monospace;font-size:11px;}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="../index.html" class="logo">燈<span>塔</span>財經</a>
+    <a href="../index.html" class="back-link">← 返回首頁</a>
+  </div>
+</header>
+
+<div class="cat-hero">
+  <div class="cat-hero-inner">
+    <div class="cat-en">TECHNOLOGY</div>
+    <div class="cat-title">科技</div>
+    <div class="cat-desc">AI・半導體・科技產業・數位轉型</div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="news-list" id="tech-news-list">
+    <!-- 由 n8n 注入 -->
+    <div style="padding:40px;text-align:center;color:var(--muted);font-family:'Noto Serif TC',serif;">
+      科技新聞將由 AI 自動填入
+    </div>
+  </div>
+</div>
+<footer>燈塔財經 — 科技版</footer>
+</body>
+</html>
